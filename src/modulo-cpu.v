@@ -2,10 +2,10 @@
 
 module fsmCPU(clk2,rst2,ack,dado,send);
 
-    output reg [1:0] dado;    //dado 
-	output reg [1:0] send;    //send - [1 - dado enviado; 0 - pronto para enviar dado]
+	output reg [1:0] dado;    //dado 
+	output reg send;    //send - [1 - dado enviado; 0 - pronto para enviar dado]
 
-    input ack;		          //ack [1 - aguardando retorno; 2 - esperando envio de dado]
+	input ack;		          //ack [1 - aguardando retorno; 2 - esperando envio de dado]
 	input clk2;		          //clock
 	input rst2;		          //reset
 	
@@ -44,7 +44,7 @@ module fsmCPU(clk2,rst2,ack,dado,send);
 					begin
 						NS = 2'b01;
 						send = 1;
-						dado = 1;
+            dado = 2'b10;
 					end
 				end
                 2'b01://estdo 01
@@ -59,7 +59,7 @@ module fsmCPU(clk2,rst2,ack,dado,send);
 					begin
 						NS = 2'b00;
 						send = 1;
-						dado = 1;
+						dado = 2'b10;
 					end
 				end
 			endcase
@@ -73,12 +73,12 @@ module fsmCPU(clk2,rst2,ack,dado,send);
 				2'b00://estado 00
 				begin
 					send	= 1;
-					dado    = 1;
+					dado  = 2'b10;
 				end
 				2'b01://estado 01
 				begin
-					send    = 0;
-					dado	= 0;
+					send = 0;
+					dado = 0;
 				end
 			endcase
 		end

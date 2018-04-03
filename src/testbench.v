@@ -9,13 +9,13 @@ module testbench;
 
 	//*** Inputs Periferico ***
   //alterar para wire ao testar com a CPU
-	reg send;
+	wire send;
 
 	reg clk1;
 	reg rst1;
 
   //alterar para wire ao testar com a CPU
-	reg [1:0] dataInput;
+	wire [1:0] dataWire;
 
   //*** Inputs CPU ***
 	reg clk2;
@@ -29,7 +29,7 @@ module testbench;
     //vai ser o output da CPU (wire)
 		.send(send), 
     //vai ser o output da CPU (wire)
-		.dataInput(dataInput), 
+		.dataInput(dataWire), 
     .ack(ack),
 		.clk1(clk1), 
 		.rst1(rst1)
@@ -37,7 +37,10 @@ module testbench;
 
   fsmCPU fsmCPU (
 		.clk2(clk2), 
-		.rst2(rst2)
+		.rst2(rst2),
+    .ack(ack),
+    .dado(dataWire),
+    .send(send)
 	);
 
 	initial begin
@@ -47,8 +50,6 @@ module testbench;
     Running = 1;
     
 		// Initialize Inputs
-		send = 0;
-		dataInput = 0;
 		clk1 = 0;
 		rst1 = 1;
 
@@ -56,19 +57,9 @@ module testbench;
 		rst2 = 1;
 
 		#50;
+
     rst1 = 0;
-    dataInput=2'b11;
-		send = 1;
-
-    #10;
-    send = 0;
-
-    #50;
-    dataInput=2'b10;
-		send = 1;
-
-    #10;
-    send = 0;
+    rst2 = 0;
 
     #100 Running = 0;
 	end
