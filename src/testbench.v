@@ -6,6 +6,7 @@
 module testbench;
 
   reg Running;
+  reg Running2;
 
 	//*** Inputs Periferico ***
   //alterar para wire ao testar com a CPU
@@ -15,7 +16,7 @@ module testbench;
 	reg rst1;
 
   //alterar para wire ao testar com a CPU
-	wire [1:0] dataWire;
+	wire [2:0] dataWire;
 
   //*** Inputs CPU ***
 	reg clk2;
@@ -39,16 +40,18 @@ module testbench;
 		.clk2(clk2), 
 		.rst2(rst2),
     .ack(ack),
-    .dado(dataWire),
+    .data(dataWire),
     .send(send)
 	);
 
 	initial begin
     // Dump waves
     $dumpfile("dump.vcd");
+    //$dumpfile("clock2xPeriferico.vcd");
+    //$dumpfile("clock2xCPU.vcd");
+    //$dumpfile("clock10xCPU.vcd");
+    //$dumpfile("clock10xPeriferico.vcd");
     $dumpvars(3);
-    Running = 1;
-    
 		// Initialize Inputs
 		clk1 = 0;
 		rst1 = 1;
@@ -56,12 +59,15 @@ module testbench;
     clk2 = 0;
 		rst2 = 1;
 
-		#50;
+		#200;
 
     rst1 = 0;
     rst2 = 0;
 
-    #100 Running = 0;
+    #2000 
+    
+    Running = 0;
+    Running2 = 0;
 	end
 
 //clock periferico
@@ -69,16 +75,17 @@ initial begin
   clk1 = 0;
   Running = 1;
   while (Running) begin
-    #5 clk1 = ~clk1;
+    #50 clk1 = ~clk1;
   end
 end
 
 //clock cpu
 initial begin
   clk2 = 0;
-  Running = 1;
-  while (Running) begin
-    #10 clk2 = ~clk2;
+  #50
+  Running2 = 1;
+  while (Running2) begin
+    #25 clk2 = ~clk2;
   end
 end
   

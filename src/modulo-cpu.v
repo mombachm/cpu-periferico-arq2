@@ -1,16 +1,16 @@
 `timescale 1ns / 1ps
 
-module fsmCPU(clk2,rst2,ack,dado,send);
+module fsmCPU(clk2,rst2,ack,data,send);
 
-	output reg [1:0] dado;    //dado 
+	output reg [2:0] data;    //dado 
 	output reg send;    //send - [1 - dado enviado; 0 - pronto para enviar dado]
 
 	input ack;		          //ack [1 - aguardando retorno; 2 - esperando envio de dado]
 	input clk2;		          //clock
 	input rst2;		          //reset
 	
-	reg [1:0] S;
-	reg [1:0] NS;
+	reg S;
+	reg NS;
 	
 	/*
 	estados:
@@ -22,7 +22,7 @@ module fsmCPU(clk2,rst2,ack,dado,send);
 	always @ (posedge clk2)
 		begin
 			if (rst2 == 1)
-				S <= 2'b00;
+				S <= 0;
 			else
 				S <= NS;
 		end
@@ -32,36 +32,19 @@ module fsmCPU(clk2,rst2,ack,dado,send);
 	always @ (*)
 		begin
 			case ({S})
-				2'b00://estado 00
-				begin
-					if (rst2 == 1 || ack == 0)
-					begin
-						NS = 2'b00;
-						send = 0;
-						dado = 0;  //==================> Se não funcionar, testar sem
-					end
-					else if (ack == 1 && rst2 == 0)
-					begin
-						NS = 2'b01;
-						send = 1;
-            dado = 2'b10;
-					end
-				end
-                2'b01://estdo 01
-				begin
-					if (ack == 1)
-					begin
-						NS = 2'b01;
-						send = 0;
-						dado = 0;  //==================> Se não funcionar, testar sem
-					end
-					else if (ack == 0)
-					begin
-						NS = 2'b00;
-						send = 1;
-						dado = 2'b10;
-					end
-				end
+				0://estado 00
+					if (ack == 0)
+						NS = 0;
+					else
+						NS = 1;
+        1://estdo 01
+					if (ack == 0)
+          begin
+						NS = 0;
+            data = 0;
+          end
+					else
+						NS = 1;
 			endcase
 		end
 	/***** NEXT STATE *****/
@@ -70,15 +53,14 @@ module fsmCPU(clk2,rst2,ack,dado,send);
 	always @ (*)
 		begin
 			case ({S})
-				2'b00://estado 00
+				0://estado 00
 				begin
 					send	= 1;
-					dado  = 2'b10;
+					data  = $urandom%7; 
 				end
-				2'b01://estado 01
+				1://estado 01
 				begin
 					send = 0;
-					dado = 0;
 				end
 			endcase
 		end
