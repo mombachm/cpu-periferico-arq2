@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module fsmCPU(clk2, rst2, ack, dado, send);
+module fsmCPU(clk2,rst2,ack,dado,send);
 
     output reg [1:0] dado;    //dado 
 	output reg [1:0] send;    //send - [1 - dado enviado; 0 - pronto para enviar dado]
@@ -21,7 +21,7 @@ module fsmCPU(clk2, rst2, ack, dado, send);
 	/***** STATE *****/
 	always @ (posedge clk2)
 		begin
-			if (rst == 1)
+			if (rst2 == 1)
 				S <= 2'b00;
 			else
 				S <= NS;
@@ -34,25 +34,33 @@ module fsmCPU(clk2, rst2, ack, dado, send);
 			case ({S})
 				2'b00://estado 00
 				begin
-					if (rst == 1 || ack == 0)
+					if (rst2 == 1 || ack == 0)
+					begin
 						NS = 2'b00;
 						send = 0;
 						dado = 0;  //==================> Se não funcionar, testar sem
-					else if (ack == 1 && rst == 0)
+					end
+					else if (ack == 1 && rst2 == 0)
+					begin
 						NS = 2'b01;
 						send = 1;
 						dado = 1;
+					end
 				end
                 2'b01://estdo 01
 				begin
 					if (ack == 1)
+					begin
 						NS = 2'b01;
 						send = 0;
 						dado = 0;  //==================> Se não funcionar, testar sem
+					end
 					else if (ack == 0)
+					begin
 						NS = 2'b00;
 						send = 1;
 						dado = 1;
+					end
 				end
 			endcase
 		end
