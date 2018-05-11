@@ -2,7 +2,7 @@
 Async communication using Verilog.
 
 ------
-##Verilog compilation
+## Verilog compilation
 ------
 * To compile verilog with Icarus verilog:
 
