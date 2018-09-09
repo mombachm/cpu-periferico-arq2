@@ -5,11 +5,11 @@ module fsmPeriferico(send,dataInput,ack,clk1,rst1);
 	output reg ack;
 
 	input send;
-  input [1:0] dataInput;
+  input [2:0] dataInput;
 	input clk1;
 	input rst1;
 
-  reg [1:0] data;
+  reg [2:0] data;
 	
 	reg S;//state
 	reg NS;//next state
@@ -20,7 +20,6 @@ module fsmPeriferico(send,dataInput,ack,clk1,rst1);
 			if(rst1 == 1)
       begin
 				S <= 0;
-        data <= 2'b00;
       end
 			else
 				S <= NS;
